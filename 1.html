@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARS IT School | Robotics Free Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mars-white: #FFFFFF;
+            --mars-orange: #FF4B2B;
+            --mars-orange-soft: #FFF3F0;
+            --mars-red: #E11D48;
+            --mars-darkblue: #0B192C;
+            --mars-blue-accent: #1E3E62;
+            --text-dark: #0F172A;
+            --text-muted: #475569;
+            --cyber-cyan: #00E5FF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--mars-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* ================= ПАРЯЩИЕ ЭЛЕКТРОННЫЕ КОМПОНЕНТЫ (CSS SPRITES ИЗ image_a7b1e2.jpg) ================= */
+        .deco-layer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-comp {
+            position: absolute;
+            width: 95px;
+            height: 95px;
+            background-image: url('image_a7b1e2.jpg');
+            background-size: 520px 520px;
+            background-repeat: no-repeat;
+            border-radius: 20px;
+            border: 3px solid var(--mars-darkblue);
+            box-shadow: 0 14px 28px rgba(11, 25, 44, 0.16);
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.92;
+            animation: floatComp 6s ease-in-out infinite;
+            background-color: #fff;
+        }
+
+        .floating-comp.red-ring {
+            border-color: var(--mars-red);
+            box-shadow: 0 14px 28px rgba(225, 29, 72, 0.2);
+        }
+
+        .floating-comp.white-ring {
+            border-color: var(--mars-white);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Координаты отдельных деталей на листе image_a7b1e2.jpg */
+        .comp-lcd       { background-position: -165px -10px; }  /* LCD экран */
+        .comp-relay     { background-position: -275px -12px; }  /* Синее реле */
+        .comp-touch     { background-position: -80px -200px; }  /* Сенсор касания */
+        .comp-servo     { background-position: -425px -195px; } /* Сервопривод */
+        .comp-cap       { background-position: -285px -305px; } /* Конденсатор */
+        .comp-resistors { background-position: -415px -410px; } /* Резисторы */
+        .comp-bread     { background-position: -10px -85px; }   /* Макетная плата */
+        .comp-buzzer    { background-position: -325px -155px; } /* Датчик звука */
+
+        @keyframes floatComp {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-16px) rotate(5deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .floating-comp {
+                width: 68px;
+                height: 68px;
+                background-size: 380px 380px;
+                opacity: 0.45;
+            }
+        }
+
+        /* ================= ШАПКА И ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКОВ (RU | UZ | EN) ================= */
+        header {
+            position: sticky;
+            top: 14px;
+            z-index: 100;
+            padding: 0 20px;
+            margin-top: 14px;
+        }
+
+        .navbar {
+            max-width: 1180px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 3px solid var(--mars-darkblue);
+            border-radius: 22px;
+            padding: 14px 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(11, 25, 44, 0.08);
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .logo {
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--mars-darkblue);
+            letter-spacing: -1px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span.deg {
+            color: var(--mars-orange);
+        }
+
+        .logo-tag {
+            font-size: 12px;
+            font-weight: 800;
+            background: var(--mars-red);
+            color: var(--mars-white);
+            padding: 4px 10px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .lang-switcher {
+            display: flex;
+            background: var(--mars-darkblue);
+            padding: 4px;
+            border-radius: 50px;
+            gap: 4px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: #CBD5E1;
+            padding: 7px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--mars-orange);
+            color: var(--mars-white);
+            box-shadow: 0 3px 10px rgba(255, 75, 43, 0.4);
+        }
+
+        .cta-top-btn {
+            background: var(--mars-red);
+            color: var(--mars-white);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 14px;
+            border: 2px solid var(--mars-darkblue);
+            transition: transform 0.2s ease;
+        }
+
+        .cta-top-btn:hover {
+            transform: translateY(-2px);
+            background: var(--mars-orange);
+        }
+
+        /* ================= ФОНЫ СЕКЦИЙ И РАМКИ (БЕЛЫЙ, ОРАНЖЕВЫЙ, ТЕМНО-СИНИЙ, КРАСНЫЙ) ================= */
+        .section-white {
+            background-color: var(--mars-white);
+            background-image: radial-gradient(#CBD5E1 1.2px, transparent 1.2px);
+            background-size: 26px 26px;
+            padding: 70px 0;
+        }
+
+        .section-orange {
+            background: linear-gradient(135deg, var(--mars-orange) 0%, #FF6B4A 100%);
+            padding: 75px 0;
+            color: var(--mars-white);
+        }
+
+        /* Рамки секций */
+        .frame-darkblue {
+            background: var(--mars-white);
+            border: 4px solid var(--mars-darkblue);
+            border-radius: 28px;
+            padding: 42px;
+            box-shadow: 10px 10px 0px var(--mars-darkblue);
+            position: relative;
+        }
+
+        .frame-red {
+            background: var(--mars-white);
+            border: 4px solid var(--mars-red);
+            border-radius: 28px;
+            padding: 42px;
+            box-shadow: 10px 10px 0px var(--mars-red);
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        .frame-white-on-orange {
+            background: var(--mars-darkblue);
+            border: 4px solid var(--mars-white);
+            border-radius: 28px;
+            padding: 42px;
+            box-shadow: 10px 10px 0px rgba(11, 25, 44, 0.45);
+            color: var(--mars-white);
+            position: relative;
+        }
+
+        /* ================= HERO & ЛЕГЕНДА КУРСА ================= */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 36px;
+            align-items: center;
+        }
+
+        .free-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--mars-red);
+            color: var(--mars-white);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            border: 2px solid var(--mars-darkblue);
+        }
+
+        .hero-title {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--mars-darkblue);
+            margin-bottom: 18px;
+        }
+
+        .hero-title span {
+            color: var(--mars-orange);
+        }
+
+        .legend-box {
+            background: var(--mars-orange-soft);
+            border-left: 6px solid var(--mars-red);
+            border-top: 2px solid var(--mars-darkblue);
+            border-right: 2px solid var(--mars-darkblue);
+            border-bottom: 2px solid var(--mars-darkblue);
+            padding: 20px 24px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--mars-darkblue);
+            margin-bottom: 24px;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 26px;
+        }
+
+        .h-badge {
+            background: var(--mars-darkblue);
+            color: var(--mars-white);
+            padding: 10px 18px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .h-badge.limit {
+            background: var(--mars-red);
+            animation: pulseSeats 2s infinite;
+        }
+
+        @keyframes pulseSeats {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        .hero-visual {
+            background: linear-gradient(145deg, var(--mars-darkblue), var(--mars-blue-accent));
+            border: 4px solid var(--mars-red);
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            color: var(--mars-white);
+            position: relative;
+        }
+
+        .hero-visual img {
+            width: 100%;
+            max-height: 290px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 16px;
+            padding: 12px;
+            border: 3px solid var(--mars-white);
+        }
+
+        .hero-visual-caption {
+            margin-top: 14px;
+            font-weight: 800;
+            font-size: 15px;
+            color: #FFD166;
+        }
+
+        /* ================= ЧЕМУ ВЫ НАУЧИТЕСЬ (ПРОГРАММА И ОБОРУДОВАНИЕ) ================= */
+        .section-heading {
+            text-align: center;
+            margin-bottom: 46px;
+        }
+
+        .section-heading h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .section-heading p {
+            font-size: 17px;
+            max-width: 680px;
+            margin: 0 auto;
+            opacity: 0.92;
+        }
+
+        .learn-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+        }
+
+        .learn-card {
+            background: var(--mars-white);
+            color: var(--text-dark);
+            border: 4px solid var(--mars-darkblue);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 8px 8px 0px var(--mars-darkblue);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.25s ease;
+        }
+
+        .learn-card.red-frame {
+            border-color: var(--mars-red);
+            box-shadow: 8px 8px 0px var(--mars-red);
+        }
+
+        .learn-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .card-tag {
+            display: inline-block;
+            background: var(--mars-darkblue);
+            color: var(--mars-white);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            align-self: flex-start;
+        }
+
+        .learn-card.red-frame .card-tag {
+            background: var(--mars-red);
+        }
+
+        .learn-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--mars-darkblue);
+            margin-bottom: 10px;
+        }
+
+        .learn-card p {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .photo-dual {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .photo-box {
+            background: #F8FAFC;
+            border: 2px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+        }
+
+        .photo-box span {
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--mars-darkblue);
+            margin-top: 6px;
+        }
+
+        .photo-single {
+            background: #F8FAFC;
+            border: 2px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .photo-single img {
+            width: 100%;
+            height: 195px;
+            object-fit: contain;
+        }
+
+        /* ================= ДРОН (COMING SOON CYBER HUD STYLING) ================= */
+        .drone-showcase {
+            margin-top: 32px;
+            background: var(--mars-darkblue);
+            border: 4px solid var(--mars-white);
+            border-radius: 26px;
+            padding: 34px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 30px;
+            align-items: center;
+            box-shadow: 10px 10px 0px var(--mars-red);
+            color: var(--mars-white);
+        }
+
+        .coming-soon-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--mars-red);
+            color: var(--mars-white);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            border: 2px solid var(--mars-white);
+        }
+
+        .drone-hud-frame {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid var(--cyber-cyan);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+            background: #050B14;
+        }
+
+        /* Делаем фото дрона на полу крутым через CSS-фильтры и HUD-сетку */
+        .drone-hud-frame img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            filter: contrast(1.22) saturate(1.3) brightness(0.92);
+            transform: scale(1.06) rotate(-3deg);
+            transition: transform 0.4s ease;
+            display: block;
+        }
+
+        .drone-hud-frame:hover img {
+            transform: scale(1.12) rotate(0deg);
+        }
+
+        .drone-hud-overlay {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle, transparent 45%, rgba(11, 25, 44, 0.85) 100%),
+                linear-gradient(180deg, rgba(0, 229, 255, 0.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.12) 1px, transparent 1px);
+            background-size: 100% 100%, 24px 24px, 24px 24px;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 14px;
+        }
+
+        .hud-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--cyber-cyan);
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px #000;
+        }
+
+        .hud-reticle {
+            width: 66px;
+            height: 66px;
+            border: 2px dashed var(--cyber-cyan);
+            border-radius: 50%;
+            margin: auto;
+            opacity: 0.75;
+        }
+
+        /* ================= КАЛЕНДАРЬ И РАСПИСАНИЕ ПО ФИЛИАЛАМ ================= */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 26px;
+        }
+
+        .branch-card {
+            background: var(--mars-white);
+            border: 4px solid var(--mars-darkblue);
+            border-radius: 22px;
+            padding: 24px 20px;
+            box-shadow: 6px 6px 0px var(--mars-darkblue);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .branch-card.red-accent {
+            border-color: var(--mars-red);
+            box-shadow: 6px 6px 0px var(--mars-red);
+        }
+
+        .day-pill {
+            background: var(--mars-orange);
+            color: var(--mars-white);
+            font-weight: 800;
+            font-size: 13px;
+            padding: 5px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+
+        .branch-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--mars-darkblue);
+            margin-bottom: 6px;
+        }
+
+        .branch-time {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--mars-red);
+            margin-bottom: 10px;
+        }
+
+        .branch-address {
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px dashed #CBD5E1;
+            padding-top: 10px;
+            margin-top: auto;
+        }
+
+        .paused-branches-alert {
+            background: var(--mars-darkblue);
+            color: var(--mars-white);
+            border: 4px solid var(--mars-red);
+            border-radius: 22px;
+            padding: 22px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .paused-branches-alert h4 {
+            font-size: 19px;
+            font-weight: 800;
+            color: #FFD166;
+            margin-bottom: 4px;
+        }
+
+        .paused-branches-alert p {
+            font-size: 14px;
+            color: #E2E8F0;
+        }
+
+        /* ================= ПРЕПОДАВАТЕЛЬ И КАК ЗАПИСАТЬСЯ ================= */
+        .mentor-join-grid {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 32px;
+            align-items: stretch;
+        }
+
+        .mentor-card {
+            background: var(--mars-white);
+            color: var(--text-dark);
+            border: 4px solid var(--mars-darkblue);
+            border-radius: 26px;
+            padding: 32px;
+            box-shadow: 10px 10px 0px var(--mars-darkblue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .mentor-photo-wrap {
+            width: 190px;
+            height: 190px;
+            border-radius: 26px;
+            border: 4px solid var(--mars-red);
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 6px 6px 0px var(--mars-darkblue);
+            transform: rotate(-3deg);
+            background: var(--mars-darkblue);
+        }
+
+        /* Меняем ракурс фото преподавателя, чтобы смотрелось динамично и стильно */
+        .mentor-photo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 18%;
+            transform: rotate(3deg) scale(1.12);
+        }
+
+        .mentor-name {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--mars-darkblue);
+            margin-bottom: 6px;
+        }
+
+        .mentor-exp {
+            display: inline-block;
+            background: var(--mars-orange);
+            color: var(--mars-white);
+            font-weight: 800;
+            font-size: 13px;
+            padding: 5px 14px;
+            border-radius: 50px;
+            margin-bottom: 14px;
+        }
+
+        .join-steps-list {
+            list-style: none;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .join-steps-list li {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .step-num {
+            background: var(--mars-orange);
+            color: var(--mars-white);
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .limit-banner {
+            background: var(--mars-red);
+            border: 3px solid var(--mars-white);
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-weight: 800;
+            text-align: center;
+            font-size: 16px;
+            margin-top: auto;
+        }
+
+        footer {
+            background: var(--mars-darkblue);
+            color: var(--mars-white);
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 4px solid var(--mars-red);
+            font-size: 14px;
+        }
+
+        @media (max-width: 960px) {
+            .hero-grid,
+            .learn-grid,
+            .drone-showcase,
+            .mentor-join-grid {
+                grid-template-columns: 1fr;
+            }
+            .schedule-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero-title {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .schedule-grid,
+            .photo-dual {
+                grid-template-columns: 1fr;
+            }
+            .frame-darkblue,
+            .frame-red,
+            .frame-white-on-orange {
+                padding: 24px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= НАВИГАЦИЯ И ВЫБОР ЯЗЫКА ================= -->
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                mars<span class="deg">°</span>
+                <span class="logo-tag">Robotics</span>
+            </a>
+
+            <div class="nav-right">
+                <div class="lang-switcher">
+                    <button class="lang-btn active" onclick="switchLang('ru', this)">RU</button>
+                    <button class="lang-btn" onclick="switchLang('uz', this)">UZ</button>
+                    <button class="lang-btn" onclick="switchLang('en', this)">EN</button>
+                </div>
+                <a href="#join" class="cta-top-btn" data-i18n="nav_cta">Записаться (10 мест)</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ================= СЕКЦИЯ 1: БЕЛЫЙ ФОН + ЛЕГЕНДА О КУРСЕ ================= -->
+    <section class="section-white deco-layer">
+        <!-- Парящие электронные компоненты из image_a7b1e2.jpg вокруг текста -->
+        <div class="floating-comp comp-lcd" style="top: 35px; left: 2%;" title="LCD 16x2"></div>
+        <div class="floating-comp comp-relay red-ring" style="bottom: 40px; left: 4%; animation-delay: 1.5s;" title="Relay Module"></div>
+        <div class="floating-comp comp-servo" style="top: 50px; right: 2.5%; animation-delay: 0.8s;" title="Micro Servo"></div>
+
+        <div class="container">
+            <div class="frame-darkblue">
+                <div class="hero-grid">
+                    <div>
+                        <div class="free-pill" data-i18n="hero_pill">🎁 100% БЕСПЛАТНЫЙ КУРС ДЛЯ СТУДЕНТОВ MARS</div>
+                        <h1 class="hero-title" data-i18n="hero_title">Клуб Робототехники и Инженерии <span>MARS Robotics</span></h1>
+                        
+                        <div class="legend-box" data-i18n="hero_legend">
+                            Это полностью бесплатный курс для студентов MARS IT School! Он создан, чтобы ребята получали практические инженерные навыки, идущие рука об руку с миром IT, а также весело и с пользой проводили свободное время и перемены между основными занятиями. Уроки проводятся бесплатно в разных филиалах MARS!
+                        </div>
+
+                        <div class="hero-badges">
+                            <div class="h-badge" data-i18n="badge_1">⏱ 1 раз в неделю (по 1 часу)</div>
+                            <div class="h-badge" data-i18n="badge_2">🎓 Для любого студента MARS</div>
+                            <div class="h-badge limit" data-i18n="badge_3">🔥 Всего 10 мест в группе!</div>
+                        </div>
+                    </div>
+
+                    <div class="hero-visual">
+                        <img src="image_a7c80b.jpg" alt="MARS Robo Car">
+                        <div class="hero-visual-caption" data-i18n="hero_img_cap">Собирай, паяй и программируй реальных роботов своими руками!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= СЕКЦИЯ 2: ОРАНЖЕВЫЙ ФОН + ЧЕМУ ТЫ НАУЧИШЬСЯ ================= -->
+    <section class="section-orange deco-layer">
+        <!-- Парящие электронные компоненты вокруг карточек -->
+        <div class="floating-comp comp-touch white-ring" style="top: 60px; left: 1.5%; animation-delay: 0.5s;"></div>
+        <div class="floating-comp comp-cap white-ring" style="top: 48%; right: 1.5%; animation-delay: 2s;"></div>
+        <div class="floating-comp comp-resistors white-ring" style="bottom: 50px; left: 2%; animation-delay: 1.2s;"></div>
+
+        <div class="container">
+            <div class="section-heading">
+                <h2 data-i18n="learn_h2">Чему вы научитесь на курсе?</h2>
+                <p data-i18n="learn_sub">Никакой скучной теории — только реальная сборка, пайка, датчики, микроконтроллеры и собственные гаджеты.</p>
+            </div>
+
+            <div class="learn-grid">
+                <!-- 1. Электроника и пайка -->
+                <div class="learn-card">
+                    <span class="card-tag" data-i18n="c1_tag">Модуль 01 • База инженера</span>
+                    <h3 data-i18n="c1_title">Электроника и Пайка</h3>
+                    <p data-i18n="c1_desc">Изучаем, как устроены электронные компоненты, как правильно собирать электрические цепи на макетных платах и безопасно работать с паяльником.</p>
+                    <div class="photo-dual">
+                        <div class="photo-box">
+                            <img src="image_a7b27b.png" alt="Soldering">
+                            <span data-i18n="c1_p1">Практика пайки</span>
+                        </div>
+                        <div class="photo-box">
+                            <img src="image_a7b1e2.jpg" alt="Electronic Components">
+                            <span data-i18n="c1_p2">Датчики и модули</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Робо-машинки (Синяя и Черная) -->
+                <div class="learn-card red-frame">
+                    <span class="card-tag" data-i18n="c2_tag">Модуль 02 • Робомобили</span>
+                    <h3 data-i18n="c2_title">Робо-машинки (Robo Cars)</h3>
+                    <p data-i18n="c2_desc">Конструирование, программирование и управление боевыми и умными робо-машинками с ультразвуковыми радарами, следованием по линии, LED-матрицей и Bluetooth.</p>
+                    <div class="photo-dual">
+                        <div class="photo-box">
+                            <img src="image_a7c825.jpg" alt="Blue Robo Car">
+                            <span data-i18n="c2_p1">Синий Робокар 2WD</span>
+                        </div>
+                        <div class="photo-box">
+                            <img src="image_a7c80b.jpg" alt="Black Robo Car">
+                            <span data-i18n="c2_p2">Черный Робокар LED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Умный дом (Smart House) -->
+                <div class="learn-card red-frame">
+                    <span class="card-tag" data-i18n="c3_tag">Модуль 03 • IoT и Безопасность</span>
+                    <h3 data-i18n="c3_title">Умный дом (Smart House)</h3>
+                    <p data-i18n="c3_desc">Построй собственную систему безопасного «Умного дома» с автоматическими дверями на сервоприводах, вентиляцией, LCD-экраном и датчиками движения/света.</p>
+                    <div class="photo-single">
+                        <img src="image_a7c53b.jpg" alt="Keyestudio Smart Home">
+                    </div>
+                </div>
+
+                <!-- 4. Arduino Uno и Nano -->
+                <div class="learn-card">
+                    <span class="card-tag" data-i18n="c4_tag">Модуль 04 • Микроконтроллеры</span>
+                    <h3 data-i18n="c4_title">Проекты на Arduino (Uno & Nano)</h3>
+                    <p data-i18n="c4_desc">Программируем «мозги» наших роботов! Создавай крутые автоматизированные устройства и гаджеты, которые реально помогают в повседневной жизни.</p>
+                    <div class="photo-dual">
+                        <div class="photo-box">
+                            <img src="image_a7bce2.png" alt="Arduino Uno">
+                            <span>Arduino UNO</span>
+                        </div>
+                        <div class="photo-box">
+                            <img src="image_a7bd22.jpg" alt="Arduino Nano">
+                            <span>Arduino NANO V3.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Дрон — COMING SOON -->
+            <div class="drone-showcase">
+                <div>
+                    <div class="coming-soon-badge" data-i18n="drone_badge">🚀 СКОРО НА КУРСЕ • COMING SOON</div>
+                    <h3 style="font-size: 30px; font-weight: 800; margin-bottom: 12px;" data-i18n="drone_title">Сборка и пилотирование Дронов!</h3>
+                    <p style="color: #CBD5E1; font-size: 16px;" data-i18n="drone_desc">
+                        Специальный готовящийся модуль: проектирование рамы квадрокоптера, подключение бесколлекторных моторов, настройка полетного контроллера на базе Arduino и тестовые полеты!
+                    </p>
+                </div>
+
+                <div class="drone-hud-frame">
+                    <img src="image_a7b5da.jpg" alt="MARS Arduino Quadcopter Drone">
+                    <div class="drone-hud-overlay">
+                        <div class="hud-top">
+                            <span>SYS // ARDUINO FLIGHT CTRL</span>
+                            <span>STATUS: READY</span>
+                        </div>
+                        <div class="hud-reticle"></div>
+                        <div class="hud-top">
+                            <span>4X BRUSHLESS MOTORS</span>
+                            <span>MARS AIR LAB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= СЕКЦИЯ 3: БЕЛЫЙ ФОН + КАЛЕНДАРЬ И ФИЛИАЛЫ ================= -->
+    <section class="section-white deco-layer">
+        <div class="floating-comp comp-bread" style="top: 40px; right: 2%; animation-delay: 0.4s;"></div>
+        <div class="floating-comp comp-buzzer red-ring" style="bottom: 35px; left: 2%; animation-delay: 1.9s;"></div>
+
+        <div class="container">
+            <div class="frame-red">
+                <div class="section-heading">
+                    <h2 style="color: var(--mars-darkblue);" data-i18n="cal_h2">Расписание занятий по филиалам MARS</h2>
+                    <p style="color: var(--text-muted);" data-i18n="cal_sub">Занятия проходят 1 раз в неделю, длительность урока — ровно 1 час. Выбирайте удобный день!</p>
+                </div>
+
+                <div class="schedule-grid">
+                    <!-- Понедельник - Чиланзар -->
+                    <div class="branch-card">
+                        <span class="day-pill" data-i18n="day_mon">Понедельник</span>
+                        <div class="branch-name" data-i18n="br_chil">Чиланзар</div>
+                        <div class="branch-time">16:20</div>
+                        <div class="branch-address" data-i18n="addr_chil">
+                            📍 Чиланзарский р-н, квартал 8, дом 2 (ориентир: м. Мирзо Улугбека / Театр Оперетты)
+                        </div>
+                    </div>
+
+                    <!-- Среда - Тинчлик -->
+                    <div class="branch-card red-accent">
+                        <span class="day-pill" data-i18n="day_wed">Среда</span>
+                        <div class="branch-name" data-i18n="br_tinch">Тинчлик</div>
+                        <div class="branch-time">16:20</div>
+                        <div class="branch-address" data-i18n="addr_tinch">
+                            📍 Ул. Беруни, 35А (ориентир: станция метро «Тинчлик»)
+                        </div>
+                    </div>
+
+                    <!-- Четверг - Горький -->
+                    <div class="branch-card">
+                        <span class="day-pill" data-i18n="day_thu">Четверг</span>
+                        <div class="branch-name" data-i18n="br_gork">Горький</div>
+                        <div class="branch-time">15:10</div>
+                        <div class="branch-address" data-i18n="addr_gork">
+                            📍 Ул. Буюк Ипак Йули, 152/1 (ориентир: м. Буюк Ипак Йули / Максим Горький)
+                        </div>
+                    </div>
+
+                    <!-- Пятница - Сергели -->
+                    <div class="branch-card red-accent">
+                        <span class="day-pill" data-i18n="day_fri">Пятница</span>
+                        <div class="branch-name" data-i18n="br_serg">Сергели</div>
+                        <div class="branch-time">16:30</div>
+                        <div class="branch-address" data-i18n="addr_serg">
+                            📍 Сергелийский р-н, махалля Сугдиёна (ориентир: напротив «Беш Козон»)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Уведомление про Минор и Юнусабад -->
+                <div class="paused-branches-alert">
+                    <div>
+                        <h4 data-i18n="pause_title">⚠️ Филиалы «Минор» и «Юнусабад» — курс временно приостановлен</h4>
+                        <p data-i18n="pause_desc">
+                            Студенты филиалов Минор и Юнусабад, желающие посещать курс Робототехники, могут свободно приезжать в любой из 4 активных филиалов (Чиланзар, Тинчлик, Горький, Сергели) в указанные дни!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= СЕКЦИЯ 4: ОРАНЖЕВЫЙ ФОН + ПРЕПОДАВАТЕЛЬ И ЗАПИСЬ ================= -->
+    <section id="join" class="section-orange deco-layer">
+        <div class="floating-comp comp-lcd white-ring" style="top: 30px; left: 2.5%;"></div>
+        <div class="floating-comp comp-servo white-ring" style="bottom: 30px; right: 2.5%;"></div>
+
+        <div class="container">
+            <div class="mentor-join-grid">
+                <!-- Карточка учителя -->
+                <div class="mentor-card">
+                    <div class="mentor-photo-wrap">
+                        <img src="20260919_111636.jpg" alt="Bexruz Saydaliyev">
+                    </div>
+                    <span class="mentor-exp" data-i18n="mentor_exp">🔥 2 года опыта в Робототехнике</span>
+                    <h3 class="mentor-name" data-i18n="mentor_name">Бехруз Сайдалиев</h3>
+                    <p style="color: var(--text-muted); font-size: 15px; margin-top: 8px;" data-i18n="mentor_bio">
+                        Наставник направления Robotics в MARS IT School. Поможет каждому ученику с нуля разобраться в микроэлектронике, научиться паять и собрать своего первого умного робота в дружеской атмосфере!
+                    </p>
+                </div>
+
+                <!-- Как записаться -->
+                <div class="frame-white-on-orange">
+                    <h3 style="font-size: 28px; font-weight: 800; margin-bottom: 10px;" data-i18n="join_title">Как записаться на курс?</h3>
+                    <p style="color: #CBD5E1; font-size: 15px;" data-i18n="join_sub">
+                        Участвовать может любой студент MARS IT School! Выберите один из двух простых способов:
+                    </p>
+
+                    <ul class="join-steps-list">
+                        <li>
+                            <div class="step-num">1</div>
+                            <div>
+                                <strong style="font-size: 17px; display: block; color: #FFD166;" data-i18n="way1_title">Через личный кабинет MARS Space</strong>
+                                <span style="font-size: 14px; color: #E2E8F0;" data-i18n="way1_desc">Зайдите в свой студенческий аккаунт на платформе MARS Space, откройте раздел «Events» (Мероприятия) и запишитесь на урок самостоятельно.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-num">2</div>
+                            <div>
+                                <strong style="font-size: 17px; display: block; color: #FFD166;" data-i18n="way2_title">Через Ресепшн вашего филиала</strong>
+                                <span style="font-size: 14px; color: #E2E8F0;" data-i18n="way2_desc">Обратитесь напрямую к администраторам (Reception) своего филиала MARS IT School, и они добавят вас в список группы.</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="limit-banner" data-i18n="limit_box">
+                        🚨 Внимание: в каждой группе всего 10 мест! Успейте забронировать своё место заранее.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <span data-i18n="footer_text">MARS IT School Tashkent • Бесплатный клуб Робототехники для развития и яркого досуга студентов</span>
+    </footer>
+
+    <!-- ================= СКРИПТ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ (RU / UZ / EN) ================= -->
+    <script>
+        const i18nData = {
+            ru: {
+                nav_cta: "Записаться (10 мест)",
+                hero_pill: "🎁 100% БЕСПЛАТНЫЙ КУРС ДЛЯ СТУДЕНТОВ MARS",
+                hero_title: "Клуб Робототехники и Инженерии <span>MARS Robotics</span>",
+                hero_legend: "Это полностью бесплатный курс для студентов MARS IT School! Он создан, чтобы ребята получали практические инженерные навыки, идущие рука об руку с миром IT, а также весело и с пользой проводили свободное время и перемены между основными занятиями. Уроки проводятся бесплатно в разных филиалах MARS!",
+                badge_1: "⏱ 1 раз в неделю (по 1 часу)",
+                badge_2: "🎓 Для любого студента MARS",
+                badge_3: "🔥 Всего 10 мест в группе!",
+                hero_img_cap: "Собирай, паяй и программируй реальных роботов своими руками!",
+                learn_h2: "Чему вы научитесь на курсе?",
+                learn_sub: "Никакой скучной теории — только реальная сборка, пайка, датчики, микроконтроллеры и собственные гаджеты.",
+                c1_tag: "Модуль 01 • База инженера",
+                c1_title: "Электроника и Пайка",
+                c1_desc: "Изучаем, как устроены электронные компоненты, как правильно собирать электрические цепи на макетных платах и безопасно работать с паяльником.",
+                c1_p1: "Практика пайки",
+                c1_p2: "Датчики и модули",
+                c2_tag: "Модуль 02 • Робомобили",
+                c2_title: "Робо-машинки (Robo Cars)",
+                c2_desc: "Конструирование, программирование и управление умными робо-машинками с ультразвуковыми радарами, следованием по линии, LED-матрицей и Bluetooth.",
+                c2_p1: "Синий Робокар 2WD",
+                c2_p2: "Черный Робокар LED",
+                c3_tag: "Модуль 03 • IoT и Безопасность",
+                c3_title: "Умный дом (Smart House)",
+                c3_desc: "Построй собственную систему безопасного «Умного дома» с автоматическими дверями на сервоприводах, вентиляцией, LCD-экраном и датчиками.",
+                c4_tag: "Модуль 04 • Микроконтроллеры",
+                c4_title: "Проекты на Arduino (Uno & Nano)",
+                c4_desc: "Программируем «мозги» наших роботов! Создавай крутые автоматизированные проекты и гаджеты, которые помогают в повседневной жизни.",
+                drone_badge: "🚀 СКОРО НА КУРСЕ • COMING SOON",
+                drone_title: "Сборка и пилотирование Дронов!",
+                drone_desc: "Специальный готовящийся модуль: проектирование рамы квадрокоптера, подключение бесколлекторных моторов, настройка полетного контроллера на базе Arduino и тестовые полеты!",
+                cal_h2: "Расписание занятий по филиалам MARS",
+                cal_sub: "Занятия проходят 1 раз в неделю, длительность урока — ровно 1 час. Выбирайте удобный день!",
+                day_mon: "Понедельник",
+                br_chil: "Чиланзар",
+                addr_chil: "📍 Чиланзарский р-н, квартал 8, дом 2 (ориентир: м. Мирзо Улугбека / Театр Оперетты)",
+                day_wed: "Среда",
+                br_tinch: "Тинчлик",
+                addr_tinch: "📍 Ул. Беруни, 35А (ориентир: станция метро «Тинчлик»)",
+                day_thu: "Четверг",
+                br_gork: "Горький",
+                addr_gork: "📍 Ул. Буюк Ипак Йули, 152/1 (ориентир: м. Буюк Ипак Йули / Максим Горький)",
+                day_fri: "Пятница",
+                br_serg: "Сергели",
+                addr_serg: "📍 Сергелийский р-н, махалля Сугдиёна (ориентир: напротив «Беш Козон»)",
+                pause_title: "⚠️ Филиалы «Минор» и «Юнусабад» — курс временно приостановлен",
+                pause_desc: "Студенты филиалов Минор и Юнусабад, желающие посещать курс Робототехники, могут свободно приезжать в любой из 4 активных филиалов (Чиланзар, Тинчлик, Горький, Сергели) в указанные дни!",
+                mentor_exp: "🔥 2 года опыта в Робототехнике",
+                mentor_name: "Бехруз Сайдалиев",
+                mentor_bio: "Наставник направления Robotics в MARS IT School. Поможет каждому ученику с нуля разобраться в микроэлектронике, научиться паять и собрать своего первого умного робота в дружеской атмосфере!",
+                join_title: "Как записаться на курс?",
+                join_sub: "Участвовать может любой студент MARS IT School! Выберите один из двух простых способов:",
+                way1_title: "Через личный кабинет MARS Space",
+                way1_desc: "Зайдите в свой студенческий аккаунт на платформе MARS Space, откройте раздел «Events» (Мероприятия) и запишитесь на урок самостоятельно.",
+                way2_title: "Через Ресепшн вашего филиала",
+                way2_desc: "Обратитесь напрямую к администраторам (Reception) своего филиала MARS IT School, и они добавят вас в список группы.",
+                limit_box: "🚨 Внимание: в каждой группе всего 10 мест! Успейте забронировать своё место заранее.",
+                footer_text: "MARS IT School Tashkent • Бесплатный клуб Робототехники для развития и яркого досуга студентов"
+            },
+            uz: {
+                nav_cta: "Ro'yxatdan o'tish (10 ta joy)",
+                hero_pill: "🎁 MARS O'QUVCHILARI UCHUN 100% BEPUL KURS",
+                hero_title: "Robototexnika va Muhandislik Klubi <span>MARS Robotics</span>",
+                hero_legend: "Bu MARS IT School o'quvchilari uchun mutlaqo bepul kurs! Kurs o'quvchilarga IT bilan chambarchas bog'liq bo'lgan amaliy muhandislik ko'nikmalarini berish hamda asosiy darslar orasidagi tanaffus va bo'sh vaqtlarini qiziqarli, foydali o'tkazishlari uchun tashkil etilgan. Darslar MARSning turli filiallarida bepul o'tkaziladi!",
+                badge_1: "⏱ Haftada 1 marta (1 soatdan)",
+                badge_2: "🎓 Barcha MARS o'quvchilari uchun",
+                badge_3: "🔥 Guruhda atigi 10 ta joy!",
+                hero_img_cap: "Haqiqiy robotlarni o'z qo'lingiz bilan yig'ing, kavsharlang va dasturlang!",
+                learn_h2: "Kursda nimalarni o'rganasiz?",
+                learn_sub: "Zerikarli nazariya yo'q — faqat real elektronika yig'ish, kavsharlash, datchiklar, mikrokontrollerlar va shaxsiy gadjetlar.",
+                c1_tag: "01-Modul • Muhandislik asosi",
+                c1_title: "Elektronika va Kavsharlash (Payka)",
+                c1_desc: "Elektron qismlarni bir-biriga ulash, maket platalarida elektr zanjirlarini yig'ish va kavsharlagich (payalnik) bilan xavfsiz ishlashni o'rganamiz.",
+                c1_p1: "Kavsharlash amaliyoti",
+                c1_p2: "Datchik va modullar",
+                c2_tag: "02-Modul • Robomobillar",
+                c2_title: "Robo-mashinalar (Robo Cars)",
+                c2_desc: "Ultratovushli radarlar, chiziq bo'ylab harakatlanish, LED-matritsa va Bluetooth orqali boshqariladigan aqlli robo-mashinalarni loyihalash va dasturlash.",
+                c2_p1: "Ko'k Robokar 2WD",
+                c2_p2: "Qora Robokar LED",
+                c3_tag: "03-Modul • IoT va Xavfsizlik",
+                c3_title: "Aqlli Uy (Smart House)",
+                c3_desc: "Servoprivodli avtomatik eshiklar, ventilyatsiya, LCD-ekran va harakat/yorug'lik datchiklariga ega o'z xavfsiz «Aqlli uy» tizimingizni quring.",
+                c4_tag: "04-Modul • Mikrokontrollerlar",
+                c4_title: "Arduino Loyihalari (Uno & Nano)",
+                c4_desc: "Robotlarimizning «miyasini» dasturlaymiz! Kundalik hayotda yordam beradigan ajoyib avtomatlashtirilgan loyihalar va gadjetlar yarating.",
+                drone_badge: "🚀 TEZ KUNDA KURSDA • COMING SOON",
+                drone_title: "Dronlarni yig'ish va uchirish!",
+                drone_desc: "Maxsus tayyorlanayotgan modul: kvadrokopter ramkasini yig'ish, motorlarni ulash, Arduino asosida parvoz kontrollerini sozlash va sinov parvozlari!",
+                cal_h2: "MARS filiallari bo'yicha dars jadvali",
+                cal_sub: "Darslar haftada 1 marta, 1 soat davomida bo'lib o'tadi. O'zingizga qulay filial va kunni tanlang!",
+                day_mon: "Dushanba",
+                br_chil: "Chilonzor",
+                addr_chil: "📍 Chilonzor tumani, 8-kvartal, 2-uy (mo'ljal: Mirzo Ulug'bek metrosi / Operetta teatri)",
+                day_wed: "Chorshanba",
+                br_tinch: "Tinchlik",
+                addr_tinch: "📍 Beruniy ko'chasi, 35A (mo'ljal: «Tinchlik» metro bekati)",
+                day_thu: "Payshanba",
+                br_gork: "Gorkiy",
+                addr_gork: "📍 Buyuk Ipak Yo'li ko'chasi, 152/1 (mo'ljal: Buyuk Ipak Yo'li / Maksim Gorkiy metrosi)",
+                day_fri: "Juma",
+                br_serg: "Sergeli",
+                addr_serg: "📍 Sergeli tumani, Sug'diyona mahallasi (mo'ljal: «Besh Qozon» ro'parasida)",
+                pause_title: "⚠️ «Minor» va «Yunusobod» filiallari — kurs vaqtincha to'xtatilgan",
+                pause_desc: "Minor va Yunusobod filiallarida o'qiydigan o'quvchilar Robototexnika darslariga qatnashish uchun ko'rsatilgan kunlarda 4 ta faol filialdan (Chilonzor, Tinchlik, Gorkiy, Sergeli) biriga tashrif buyurishlari mumkin!",
+                mentor_exp: "🔥 Robototexnikada 2 yillik tajriba",
+                mentor_name: "Bexruz Saydaliyev",
+                mentor_bio: "MARS IT School'da Robotics yo'nalishi ustozi. Har bir o'quvchiga bo'sh vaqtini maroqli o'tkazib, noldan mikroelektronikani tushunish va o'zining ilk aqlli robotini yig'ishga yordam beradi!",
+                join_title: "Kursga qanday yozilish mumkin?",
+                join_sub: "MARS IT School'ning har qanday o'quvchisi qatnashishi mumkin! Ikki oson usuldan birini tanlang:",
+                way1_title: "MARS Space shaxsiy kabineti orqali",
+                way1_desc: "MARS Space platformasidagi o'quvchi akkauntingizga kiring, «Events» (Tadbirlar) bo'limini oching va mustaqil ravishda darsga yoziling.",
+                way2_title: "Filialingizdagi Reception (Qabulxona) orqali",
+                way2_desc: "O'z filialingizdagi Reception ma'murlariga murojaat qiling va ular sizni guruh ro'yxatiga qo'shib qo'yishadi.",
+                limit_box: "🚨 Diqqat: har bir guruhda faqat 10 ta joy mavjud! Joyingizni oldindan band qilishgaoshiling.",
+                footer_text: "MARS IT School Tashkent • O'quvchilarning bo'sh vaqtini mazmunli o'tkazish uchun bepul Robototexnika klubi"
+            },
+            en: {
+                nav_cta: "Join Now (10 Spots)",
+                hero_pill: "🎁 100% FREE COURSE FOR MARS STUDENTS",
+                hero_title: "Robotics & Engineering Club <span>MARS Robotics</span>",
+                hero_legend: "It is a free course for students to let them obtain skills that go hand-in-hand with IT and offer them fun entertainment during break times between their main courses. Classes are completely free and held across different branches of MARS!",
+                badge_1: "⏱ Once a week (1 Hour)",
+                badge_2: "🎓 Open to Any MARS Student",
+                badge_3: "🔥 Only 10 Spots per Group!",
+                hero_img_cap: "Assemble, solder, and program real robots with your own hands!",
+                learn_h2: "What Will You Learn?",
+                learn_sub: "Have fun and learn hands-on engineering skills in your leisure time—from soldering circuits to coding smart robots.",
+                c1_tag: "Module 01 • Hardware Basics",
+                c1_title: "Electronics & Soldering",
+                c1_desc: "Learn how to assemble electronic components, build real circuits on breadboards, and safely use soldering tools.",
+                c1_p1: "Soldering Practice",
+                c1_p2: "Sensors & Modules",
+                c2_tag: "Module 02 • Smart Rovers",
+                c2_title: "Robo Cars",
+                c2_desc: "Designing, programming, and controlling smart robo cars equipped with ultrasonic eyes, line tracking, LED matrix displays, and Bluetooth.",
+                c2_p1: "Blue 2WD Robo Car",
+                c2_p2: "Black LED Matrix Car",
+                c3_tag: "Module 03 • IoT & Safety",
+                c3_title: "Smart House",
+                c3_desc: "Build your own safe automated home system featuring servo-controlled doors, roof cooling fans, LCD screens, and security sensors.",
+                c4_tag: "Module 04 • Microcontrollers",
+                c4_title: "Arduino (Uno & Nano)",
+                c4_desc: "Program the brains of your creations! Make cool Arduino projects and gadgets that help you in daily life.",
+                drone_badge: "🚀 COMING SOON TO ROBOTICS",
+                drone_title: "Drone Building & Flight Lab!",
+                drone_desc: "Upcoming special module: assembling a quadcopter frame, wiring brushless motors, configuring an Arduino-based flight controller, and test flying!",
+                cal_h2: "Weekly Branch Schedule",
+                cal_sub: "Classes are held once a week for 1 hour. Pick the branch and day that fits your schedule!",
+                day_mon: "Monday",
+                br_chil: "Chilonzor",
+                addr_chil: "📍 Chilanzar district, Quarter 8, Bldg 2 (near Mirzo Ulugbek Metro / Operetta Theatre)",
+                day_wed: "Wednesday",
+                br_tinch: "Tinchlik",
+                addr_tinch: "📍 Beruniy street, 35A (near Tinchlik Metro station)",
+                day_thu: "Thursday",
+                br_gork: "Gorkiy",
+                addr_gork: "📍 Buyuk Ipak Yo'li street, 152/1 (near Buyuk Ipak Yo'li / Maksim Gorkiy Metro)",
+                day_fri: "Friday",
+                br_serg: "Sergeli",
+                addr_serg: "📍 Sergeli district, Sugdiyona mahalla (opposite 'Besh Qozon')",
+                pause_title: "⚠️ Minor & Yunusobod Branches — Course Temporarily Paused",
+                pause_desc: "Students from Minor and Yunusobod branches who want to participate are welcome to visit any of the 4 active branches (Chilonzor, Tinchlik, Gorkiy, Sergeli) on the listed days!",
+                mentor_exp: "🔥 2 Years of Experience in Robotics",
+                mentor_name: "Bexruz Saydaliyev",
+                mentor_bio: "Robotics Mentor at MARS IT School. Ready to help you have fun in your leisure time, master electronics, and build awesome robots from scratch!",
+                join_title: "How to Join the Course?",
+                join_sub: "Any student at MARS IT School can join! Choose one of two easy ways to register:",
+                way1_title: "Via MARS Space Student Account",
+                way1_desc: "Log into your MARS Space student account, go to the 'Events' section, and register yourself for the upcoming Robotics class.",
+                way2_title: "Via Your Branch Reception",
+                way2_desc: "Contact your branch reception directly to join the class, and the administrators will reserve your spot.",
+                limit_box: "🚨 Hurry up: We have places for only 10 students per group!",
+                footer_text: "MARS IT School Tashkent • Free Robotics Course for Fun & Engineering Skills"
+            }
+        };
+
+        function switchLang(lang, btn) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const dict = i18nData[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.innerHTML = dict[key];
+                }
+            });
+        }
+    </script>
+</body>
+</html>
